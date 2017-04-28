@@ -22,4 +22,9 @@ function cipher_form() {
     '#title' => t('Shift Direction'),
     '#description' => t('Choose whether you would like to shift "left" or "right".'),
   );
+  $form['input'] = array(
+    '#title' => t('Message to Encode'),
+    '#type' => 'textfield',
+    '#description' => t('Enter the messsage you would like to encrypt.')
+  );
 }
