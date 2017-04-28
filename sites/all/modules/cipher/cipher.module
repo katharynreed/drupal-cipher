@@ -11,3 +11,11 @@ function cipher_menu() {
   );
   return $items;
 }
+
+function cipher_form() {
+  $form['shift_amount'] = array(
+    '#title' => t('Shift Amount'),
+    '#type' => 'textfield',
+    '#description' => t('Enter the amount of characters you want to shift your message.')
+  );
+}
