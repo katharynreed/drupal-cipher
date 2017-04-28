@@ -27,4 +27,9 @@ function cipher_form() {
     '#type' => 'textfield',
     '#description' => t('Enter the messsage you would like to encrypt.')
   );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Encrypt Now!',
+  );
+  return $form;
 }
