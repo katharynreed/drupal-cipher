@@ -18,4 +18,8 @@ function cipher_form() {
     '#type' => 'textfield',
     '#description' => t('Enter the amount of characters you want to shift your message.')
   );
+  $form['shift_direction'] = array(
+    '#title' => t('Shift Direction'),
+    '#description' => t('Choose whether you would like to shift "left" or "right".'),
+  );
 }
