@@ -1,0 +1,5 @@
+name = Cipher
+description = Encrypt phrases with a shift cipher.
+package = Totally Professional Encryption
+core = 7.x
+files[] = cipher.module
