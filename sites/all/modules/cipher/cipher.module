@@ -9,6 +9,13 @@ function cipher_menu() {
     'access callback' => TRUE,
     'type' => MENU_NORMAL_ITEM,
   );
+
+  $items['encrypt_success_page'] = array(
+    'title' => 'You did it!',
+    'page callback' => 'encrypt_success',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
   return $items;
 }
 
@@ -16,16 +23,22 @@ function cipher_form() {
   $form['shift_amount'] = array(
     '#title' => t('Shift Amount'),
     '#type' => 'textfield',
-    '#description' => t('Enter the amount of characters you want to shift your message.')
+    '#description' => t('Enter the amount of characters you want to shift your message.'),
+    '#element_validate' => array('element_validate_integer_positive','element_validate_number_range'),
+    '#required' => TRUE,
   );
   $form['shift_direction'] = array(
     '#title' => t('Shift Direction'),
+    '#type' => 'textfield',
     '#description' => t('Choose whether you would like to shift "left" or "right".'),
+    '#element_validate' => array('element_validate_left_right'),
+    '#required' => TRUE,
   );
   $form['input'] = array(
     '#title' => t('Message to Encode'),
     '#type' => 'textfield',
-    '#description' => t('Enter the messsage you would like to encrypt.')
+    '#description' => t('Enter the messsage you would like to encrypt.'),
+    '#required' => TRUE,
   );
   $form['submit'] = array(
     '#type' => 'submit',
@@ -33,3 +46,44 @@ function cipher_form() {
   );
   return $form;
 }
+
+function element_validate_number_range($element) {
+  $element = $element['#value'];
+  if ($element < 1 || $element > 25) {
+    form_error($element, t('Please reselect a number between 1 and 25.'));
+  }
+}
+
+function element_validate_left_right($element) {
+  $direction = strtolower($element['#value']);
+  if(!($direction == 'right' || $direction == 'left')) {
+    form_error($element, t('Please select "left" or "right".'));
+  }
+}
+
+function cipher_form_submit($form, &$form_state) {
+  $shift_value = (int)$form_state['values']['shift_amount'];
+
+  $shift_direction = $form_state['values']['shift_direction'];
+  $phrase = $form_state['values']['input'];
+
+  $alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
+
+  $alpha_value = array_flip($alphabet);
+
+  $split_phrase = str_split($phrase);
+  $count_phrase = count($split_phrase);
+  $encripted_phrase = '';
+
+  for($i = 0; $i < $count_phrase; $i++) {
+    $encripted_phrase .= $alphabet[($alpha_value[$split_phrase[$i]]+$shift_value)%26];
+  };
+
+  $_SESSION['encripted'] = $encripted_phrase;
+  $form_state['redirect'] = 'encrypt_success_page';
+  }
+
+  function encrypt_success() {
+    $answer = $_SESSION['encripted'];
+    return 'Your coded message is: ' . $answer. '!';
+  }
