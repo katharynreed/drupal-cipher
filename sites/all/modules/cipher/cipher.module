@@ -66,11 +66,9 @@ function element_validate_alpha($element) {
     $alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
     $alpha_check = strtolower($element['#value']);
     $alpha_check = str_split($alpha_check);
-    foreach ($alpha_check as $input_letter) {
-        foreach ($alphabet as $letter) {
-            if (!($letter == $input_letter)) {
-                form_error($element, t('No special characters.'));
-            }
+    foreach ($alpha_check as $letter) {
+        if (!(in_array($letter, $alphabet))) {
+            form_error($element, t('No special characters!'));
         }
     }
 }
