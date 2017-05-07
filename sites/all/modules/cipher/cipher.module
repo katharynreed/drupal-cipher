@@ -63,7 +63,8 @@ function element_validate_left_right($element) {
 }
 
 function element_validate_alpha($element) {
-    $alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z');
+    $alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', " ");
+    $space = " ";
     $alpha_check = strtolower($element['#value']);
     $alpha_check = str_split($alpha_check);
     foreach ($alpha_check as $letter) {
@@ -87,9 +88,29 @@ function cipher_form_submit($form, &$form_state) {
     $count_phrase = count($split_phrase);
     $encripted_phrase = '';
 
-    for($i = 0; $i < $count_phrase; $i++) {
-        $encripted_phrase .= $alphabet[($alpha_value[$split_phrase[$i]]+$shift_value)%26];
-    };
+    if ($shift_direction === 'right') {
+        for($i = 0; $i < $count_phrase; $i++) {
+            if (preg_match('/[a-zA-Z]/', $split_phrase[$i])) {
+                $encripted_phrase .= $alphabet[($alpha_value[$split_phrase[$i]]+$shift_value)%26];
+            } elseif (preg_match('/[\s\.\,\?\!]/', $split_phrase[$i])) {
+                $encripted_phrase .= $split_phrase[$i];
+            }
+        }
+    } else if ($shift_direction === 'left') {
+        for($i = 0; $i < $count_phrase; $i++) {
+            if (preg_match('/[a-z]/', $split_phrase[$i])) {
+                $amount = ($alpha_value[$split_phrase[$i]]-$shift_value);
+                if ($amount < 0) {
+                    $amount += 26;
+                    $encripted_phrase .= ($alphabet[$amount]);
+                } else {
+                    $encripted_phrase .= $alphabet[($alpha_value[$split_phrase[$i]]-$shift_value)];
+                }
+            } elseif (preg_match('/[\s\.\,\?\!]/', $split_phrase[$i])) {
+                $encripted_phrase .= $split_phrase[$i];
+            }
+        }
+    }
 
     $_SESSION['encripted'] = $encripted_phrase;
     $form_state['redirect'] = 'encrypt_success_page';
