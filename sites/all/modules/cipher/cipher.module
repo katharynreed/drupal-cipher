@@ -90,6 +90,7 @@ function cipher_form_submit($form, &$form_state) {
 
     if ($shift_direction === 'right') {
         for($i = 0; $i < $count_phrase; $i++) {
+            //I have spent 3 months refusing to use RegEx because I'm lazy. This is the project that finally broke me. 
             if (preg_match('/[a-zA-Z]/', $split_phrase[$i])) {
                 $encripted_phrase .= $alphabet[($alpha_value[$split_phrase[$i]]+$shift_value)%26];
             } elseif (preg_match('/[\s\.\,\?\!]/', $split_phrase[$i])) {
