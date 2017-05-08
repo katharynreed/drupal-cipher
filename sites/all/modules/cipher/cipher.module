@@ -38,7 +38,6 @@ function cipher_form() {
         '#title' => t('Message to Encode'),
         '#type' => 'textfield',
         '#description' => t('Enter the messsage you would like to encrypt.'),
-        '#element_validate' => array('element_validate_alpha'),
         '#required' => TRUE,
     );
     $form['submit'] = array(
@@ -62,18 +61,6 @@ function element_validate_left_right($element) {
     }
 }
 
-function element_validate_alpha($element) {
-    $alphabet = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', " ");
-    $space = " ";
-    $alpha_check = strtolower($element['#value']);
-    $alpha_check = str_split($alpha_check);
-    foreach ($alpha_check as $letter) {
-        if (!(in_array($letter, $alphabet))) {
-            form_error($element, t('No special characters!'));
-        }
-    }
-}
-
 function cipher_form_submit($form, &$form_state) {
     $shift_value = (int)$form_state['values']['shift_amount'];
 
@@ -90,7 +77,7 @@ function cipher_form_submit($form, &$form_state) {
 
     if ($shift_direction === 'right') {
         for($i = 0; $i < $count_phrase; $i++) {
-            //I have spent 3 months refusing to use RegEx because I'm lazy. This is the project that finally broke me. 
+            //I have spent 3 months refusing to use RegEx because I'm lazy. This is the project that finally broke me.
             if (preg_match('/[a-zA-Z]/', $split_phrase[$i])) {
                 $encripted_phrase .= $alphabet[($alpha_value[$split_phrase[$i]]+$shift_value)%26];
             } elseif (preg_match('/[\s\.\,\?\!]/', $split_phrase[$i])) {
